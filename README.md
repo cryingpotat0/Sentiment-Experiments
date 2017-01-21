@@ -3,6 +3,7 @@
 * Assign scores to people based on online reviews of their performance. The reviews can be found here - https://docs.google.com/spreadsheets/d/1t93ixnRBnAW5qhYHil6oE2jwK0xF31Q51Cq42OJ0lsw/edit#gid=0
 * Three dictionaries are generated containing normalized scores of positive, negative and combined score reviews. The names have been changed.
 * This can be used to better analyse performances of people in various areas. 
+* You need two JSON files, one for your spreadsheet credentials, and one for the google API credentials. Instructions can be found on the Google Cloud API site.
   ```
   Pos dict {'Aditya': 0.42499999999999993, 'Aman': 0.2833333333333333, 'Rachel': 0.42045454545454547, 'Mudit': 0.44032258064516144, 'Sam': 0.3499999999999999, 'Achal': 0.375, 'Brenda': 0.35428571428571437, 'John': 0.23333333333333334, 'Pam': 0.38571428571428573, 'Denero': 0.27631578947368424, 'Twinkle': 0.5166666666666667}
 
