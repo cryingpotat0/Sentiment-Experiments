@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>
+
+      &middot; SenSpot &middot;
+
+    </title>
+
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+
+    <link href="/static/dist/toolkit-inverse.min.css" rel="stylesheet">
+    <link href = "/static/dist/font-awesome.css" rel="stylesheet" />
+
+    <link href="/static/dist/application.css" rel="stylesheet">
+    <link href="/static/dist/main.css" rel="stylesheet">
+
+    <style>
+/* note: this is a hack for ios iframe for bootstrap themes shopify page */
+/* this chunk of css is not part of the toolkit :) */
+body {
+  width: 1px;
+  min-width: 100%;
+  *width: 100%;
+}
+    </style>
+  </head>
+
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <nav class="sidebar-nav">
+            <div class="sidebar-header text-center">
+              <a class="sidebar-brand text-center img-responsive" href="index.html">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-music fa-5x sidebar-brand-fa"></span>
+                <span class="h1 text-bold"> &nbsp;&nbsp;&nbsp;&nbsp;Sentimental Spotify </span>
+              </a>
+            </div>
+
+            <div class="collapse text-center nav-toggleable-sm" id="nav-toggleable-sm">
+              <ul class="nav nav-pills nav-stacked">
+                <li>
+                  <a href="#two_feature">Top 100 Feature Comparison</a>
+                </li>
+                <li >
+                  <a href="#gm_comparison">Google Microsoft Comparison</a>
+                </li>
+                <li>
+                  <a href="fluid/index.html">Fluid layout</a>
+                </li>
+                <li >
+                  <a href="fa-nav/index.html">Icon nav</a>
+                </li>
+              </ul>
+              <hr class="visible-xs m-t">
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <div class = "row" id="two_feature">
+        <div class="hr-divider m-t-md m-b">
+          <h3 class="hr-divider-content hr-divider-heading">Two Feature Comparison</h3>
+        </div>
+        <div class="col-sm-3 sidebar m-t-lg">
+          <nav class="sidebar-nav">
+
+
+            <div class="collapse nav-toggleable-sm" id="nav-toggleable-sm">
+
+              <ul class="nav nav-pills nav-stacked">
+                <li class="nav-header">Choose any two</li>
+                <li> 
+                  <a>
+                    Danceability
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    Energy
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    Instrumental
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    Microsoft Sentiment
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    Google Sentiment
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    Acoustic
+                  </a>
+                </li>
+              </ul>
+              <hr class="visible-xs m-t">
+            </div>
+          </nav>
+        </div>
+
+        <div class="col-sm-9 content" style="height: 100%">
+
+          <div class="row statcards">
+            <div class="col-sm-12 m-b">
+              <div class="statcard statcard-warning">
+                <div class="p-a">
+                  <span class="statcard-desc">Comparison</span>
+                  <hr class="statcard-hr m-b-0">
+                </div>
+                <canvas id="sparkline1" width="378" height="120" class="sparkline" data-chart="spark-line" data-value="[{data:[43,48,52,58,50,95,100]}]" data-labels="['a', 'b','c','d','e','f','g']" style="width: 189px; height: 47px;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <hr class="m-t">
+
+
+        <script src="/static/dist/jquery.min.js"></script>
+        <script src="/static/dist/chart.js"></script>
+        <script src="/static/dist/tablesorter.min.js"></script>
+        <script src="/static/dist/toolkit.js"></script>
+        <script src="/static/dist/application.js"></script>
+        <script>
+// execute/clear BS loaders for docs
+$(function(){while(window.BS&&window.BS.loader&&window.BS.loader.length){(window.BS.loader.pop())()}})
+        </script>
+        <script src="/static/dist/main.js"></script>
+  </body>
+</html>
+

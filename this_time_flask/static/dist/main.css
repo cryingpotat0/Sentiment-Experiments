@@ -1,0 +1,15 @@
+.text-bold {
+  font-weight: bold;
+}
+
+.nav li {
+  cursor: pointer !important;
+}
+
+a {
+  cursor: pointer;
+}
+
+#two_feature {
+  height:300px !important;
+}

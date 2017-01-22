@@ -1,7 +1,7 @@
 from flask import Flask, redirect, redirect, g, render_template
 
 from flask import jsonify
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 from google.cloud import language
 from PyLyrics import *
 from flask import request
@@ -184,6 +184,11 @@ def hello():
 @app.route("/microsoft")
 def microsoft():
     return "Microsoft"
+
+@app.route("/")
+def main_page():
+    return render_template('index.html')
+
 
 if __name__ == "__main__":
     app.run()
