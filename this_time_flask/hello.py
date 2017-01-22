@@ -71,6 +71,11 @@ def get_all_song_data():
     all_song_data = json.loads(json_string)
     all_song_data = {int(k): v for k,v in all_song_data.items()}
 
+def single_song_dict_creator(artist, song):
+    microsoft_score = int(microsoft_song_sentiment(artist=artist, song=song)*100)
+    google_score = int((google_song_sentiment(artist=artist, song=song)+1)*50)
+    response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track'.format(artist = artist, song = song), headers=authorization_header)
+    ...... = json.loads(profile_response.text)
 
 
 
@@ -116,6 +121,7 @@ def index():
     url_args = "&".join(["{}={}".format(key,urllib.parse.quote(val)) for key,val in auth_query_parameters.items()])
     auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
     return redirect(auth_url)
+
 
 
 @app.route("/index/")
@@ -213,6 +219,19 @@ def microsoft_song_sentiment(artist, song):
     return str(sum(scores)/len(scores))
 
 
+def json_creator(string):
+    #to be called after get_all_song_data() has been called and the dictionary has been populated.
+    custom_dict = dict()
+    for i in range(1, 101):
+        track = all_song_data[i]['track']
+        artist = all_song_data[i]['artist']
+        dict_key = track + ", by " + artist
+
+        custom_dict[dict_key] = all_song_data[i][string]
+    return json.dumps(custom_dict)
+
+
+
 @app.route("/hello")
 def hello():
     # top_200_songs_reader()
@@ -226,31 +245,32 @@ def hello():
 
 @app.route("/microsoft")
 def microsoft():
-    return "Microsoft"
+    return json_creator("microsoft_score")
 
 @app.route("/")
 def main_page():
+    get_all_song_data()
     return render_template('index.html')
 
 @app.route("/google")
 def google():
-    return "GOOGLE"
+    return json_creator("google_score")
 
 @app.route("/danceability")
 def danceability():
-    return "GOOGLE"
+    return json_creator("danceability")
 
 @app.route("/energy")
 def energy():
-    return "GOOGLE"
+    return json_creator("energy")
 
 @app.route("/instrumentalness")
 def instrumentalness():
-    return "GOOGLE"
+    return json_creator("instrumentalness")
 
 @app.route("/acousticness")
 def acousticness():
-    return "GOOGLE"
+    return json_creator("acousticness")
 
 if __name__ == "__main__":
     app.run()
