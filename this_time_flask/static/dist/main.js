@@ -22,12 +22,12 @@ $(document).ready(function() {
 var getJsonData = function(attribute1, attribute2) {
   $.ajax({
     type: 'GET',
-    url: 'http://localhost:5000/' + attribute1,
+    url: 'https://triple-s-156413.appspot-preview.com/' + attribute1,
     success: function(data1) {
       //console.log(data1);
       $.ajax({
         type: 'GET',
-        url: 'http://localhost:5000/' + attribute2,
+        url: 'https://triple-s-156413.appspot-preview.com/' + attribute2,
         success: function(data2) {
           //console.log(data1);
           //console.log(data2);

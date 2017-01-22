@@ -122,7 +122,7 @@ SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
 
 auth_query_parameters = {
     "response_type": "code",
-    "redirect_uri": "http://localhost:5000/index/",
+    "redirect_uri": "https://triple-s-156413.appspot-preview.com/index/",
     "scope": SCOPE,
     # "state": STATE,
     # "show_dialog": SHOW_DIALOG_str,
@@ -149,7 +149,7 @@ def redirected_page():
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": "http://localhost:5000/index/",
+        "redirect_uri": "https://triple-s-156413.appspot-preview.com/index/",
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET
     }
