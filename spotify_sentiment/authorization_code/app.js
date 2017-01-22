@@ -168,11 +168,15 @@
   var getSentiment = function(lyrics, callback) {
     
     // setTimeout(function() {
+
       var parts = lyrics.match(/[\s\S]{1,150}/g) || [];
+      console.log(languageClient.document(parts[0]));
       var scores = async.map(parts, languageClient.document, function(err, results) {
-       var sentiments = async.map(results, function(x) {x.detectSentiment}, function(err, results2){
-        console.log(results2);
-       })
+        // console.log(results);
+      // {
+      //  var sentiments = async.map(results, function(x) {x.detectSentiment}, function(err, results2){
+      //   console.log(results2);
+      //  })
       });
 
 
