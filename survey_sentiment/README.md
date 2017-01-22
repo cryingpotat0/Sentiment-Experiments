@@ -1,7 +1,6 @@
 ## Sentiment Experiments
 
-## TA Experiments
-1. The first part of the project is analyzing feedback on a course and assigning scores to TAs based on the sentiment of the reviews. This can be found under survey sentiment
+* Assign scores to people based on online reviews of their performance. The reviews can be found here - https://docs.google.com/spreadsheets/d/1t93ixnRBnAW5qhYHil6oE2jwK0xF31Q51Cq42OJ0lsw/edit#gid=0
 * Three dictionaries are generated containing normalized scores of positive, negative and combined score reviews. The names have been changed.
 * This can be used to better analyse performances of people in various areas. 
 * You need two JSON files, one for your spreadsheet credentials, and one for the google API credentials. Instructions can be found on the Google Cloud API site.
