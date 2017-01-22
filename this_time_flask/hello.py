@@ -1,14 +1,11 @@
 from flask import Flask
+from flask import jsonify
 app = Flask(__name__)
 from google.cloud import language
 from PyLyrics import *
 from flask import request
 
 app.debug = True
-
-
-
-
 
 def google_sentiment_text(text):
     """Detects sentiment in the text."""
@@ -44,24 +41,19 @@ def google_song_sentiment(artist, song):
     sentiment_scores = [google_sentiment_text(x) for x in split_lyrics]
     return str(sum(sentiment_scores)/len(sentiment_scores))
 
-@app.route("/hello")
-def hello():
+@app.route("/google")
+def google():
     artist = request.args.get('artist')
-
     song = request.args.get('song')
-    #return artist
+    return jsonify(score=google_song_sentiment(artist, song))
 
-    # print(google_song_sentiment(artist, song))
-    # lyrics = getLyrics("Taylor Swift", "Blank Space")
-    # print(lyrics)
-    # split_lyrics = splitLyrics(lyrics)
-    # print(split_lyrics)
-    # sentiment_scores = [google_sentiment_text(x) for x in split_lyrics]
-    # print(sentiment_scores)
+@app.route("/")
+def index():
+    return "Hello World"
 
-    # return "HELLO!!!!"
-    # return "Hello World!"
-    return str(google_song_sentiment(artist, song))
+@app.route("/microsoft")
+def index():
+    return "Microsoft"
 
 
 if __name__ == "__main__":
