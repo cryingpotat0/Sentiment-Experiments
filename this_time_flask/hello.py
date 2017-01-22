@@ -5,12 +5,30 @@ from PyLyrics import *
 from flask import request
 import requests
 import json
+import csv
 
 app.debug = True
 
+song_scores = dict()
 
+def top_200_songs_reader():
+    with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            rank = int(row[0])
+            song_scores[rank] = dict()
+            song_scores[rank]['track'] = row[1]
+            song_scores[rank]['artist'] = row[2]
+            print("Working on track number {rank}, {track} by {artist}".format(
+                        rank=rank, track=row[1], artist=row[2]))
+            song_scores[rank]['google_score'] = float(google_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
+            song_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
 
-
+def top_200_songs_writer():
+    with open('top200.csv', 'wb') as csv_file:
+        writer = csv.writer(csv_file)
+        for key, value in mydict.items():
+            writer.writerow([key, value])
 
 def google_sentiment_text(text):
     """Detects sentiment in the text."""
@@ -66,22 +84,12 @@ def microsoft_song_sentiment(artist, song):
 
 @app.route("/hello")
 def hello():
+    top_200_songs_reader()
+
     artist = request.args.get('artist')
-
     song = request.args.get('song')
-    #return artist
 
-    # print(google_song_sentiment(artist, song))
-    # lyrics = getLyrics("Taylor Swift", "Blank Space")
-    # print(lyrics)
-    # split_lyrics = splitLyrics(lyrics)
-    # print(split_lyrics)
-    # sentiment_scores = [google_sentiment_text(x) for x in split_lyrics]
-    # print(sentiment_scores)
-
-    # return "HELLO!!!!"
-    # return "Hello World!"
-    return str(google_song_sentiment(artist, song)) + "HELLO" + str(microsoft_song_sentiment(artist, song))
+    return str(google_song_sentiment(artist, song) * 50) + " HELLO " + str((microsoft_song_sentiment(artist, song) - 0.5) * 100)
 
 
 
