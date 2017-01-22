@@ -13,26 +13,69 @@ import urllib.parse
 
 app.debug = True
 
-song_scores = dict()
+song_sentiment_scores = dict()
+all_song_data = dict()
 
-def top_200_songs_reader():
-    with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as csvfile:
+def read_song_sentiment_scores_from_file():
+    with open('top100-gm.csv') as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
-            rank = int(row[0])
-            song_scores[rank] = dict()
-            song_scores[rank]['track'] = row[1]
-            song_scores[rank]['artist'] = row[2]
-            print("Working on track number {rank}, {track} by {artist}".format(
-                        rank=rank, track=row[1], artist=row[2]))
-            song_scores[rank]['google_score'] = float(google_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
-            song_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
+            song_sentiment_scores[int(row[0])] = {
+                        "track": row[1],
+                        "artist": row[2],
+                        "google_score": int((float(row[3]) + 1)*50),
+                        "microsoft_score": int(float(row[4]) * 100)
+                }
 
-def top_200_songs_writer():
-    with open('top200.csv', 'wb') as csv_file:
-        writer = csv.writer(csv_file)
-        for key, value in mydict.items():
-            writer.writerow([key, value])
+## DO NOT RUN THIS METHOD AGAIN ! ! ! ! 
+def write_song_sentiment_scores():
+    with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as read_file:
+        with open('top200.csv', 'wt') as write_file:
+            reader = csv.reader(read_file)
+            writer = csv.writer(write_file)
+            for row in reader:
+                rank = int(row[0])
+                song_sentiment_scores[rank] = dict()
+                song_sentiment_scores[rank]['track'] = row[1]
+                song_sentiment_scores[rank]['artist'] = row[2]
+                print("Working on track number {rank}, {track} by {artist}".format(
+                            rank=rank, track=row[1], artist=row[2]))
+                song_sentiment_scores[rank]['google_score'] = float(google_song_sentiment(song_sentiment_scores[rank]['artist'], song_sentiment_scores[rank]['track']))
+                song_sentiment_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_sentiment_scores[rank]['artist'], song_sentiment_scores[rank]['track']))
+                print("Google score is {}".format(song_sentiment_scores[rank]['google_score']))
+                print("Microsoft score is {}".format(song_sentiment_scores[rank]['microsoft_score']))
+                writer.writerow([rank, row[1], row[2], song_sentiment_scores[rank]['google_score'], song_sentiment_scores[rank]['microsoft_score']])
+
+def parse_spotify_data():
+    f = open('spotify_data')
+    json_string = f.read()
+
+    spotify_data_dict = json.loads(json_string)
+    spotify_data_list = spotify_data_dict["audio_features"]
+    # all_song_data = dict()
+
+    for i in range(100):
+        all_song_data[i + 1] = spotify_data_list[i]
+        all_song_data[i + 1] = dict(list(all_song_data[i + 1].items()) + list(song_sentiment_scores[i + 1].items()))
+
+    # print(all_song_data[0])
+
+def all_song_data_to_file():
+    json.dump(all_song_data, open("all_song_data", "w"))
+
+def get_all_song_data():
+    global all_song_data
+    f = open('all_song_data.txt')
+    json_string = f.read()
+    # print(json.loads(json_string))
+    all_song_data = json.loads(json_string)
+    all_song_data = {int(k): v for k,v in all_song_data.items()}
+
+
+
+
+
+
 
 app.debug = True
 
@@ -189,6 +232,25 @@ def microsoft():
 def main_page():
     return render_template('index.html')
 
+@app.route("/google")
+def google():
+    return "GOOGLE"
+
+@app.route("/danceability")
+def danceability():
+    return "GOOGLE"
+
+@app.route("/energy")
+def energy():
+    return "GOOGLE"
+
+@app.route("/instrumentalness")
+def instrumentalness():
+    return "GOOGLE"
+
+@app.route("/acousticness")
+def acousticness():
+    return "GOOGLE"
 
 if __name__ == "__main__":
     app.run()
