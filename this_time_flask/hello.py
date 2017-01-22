@@ -1,4 +1,4 @@
-from flask import Flask, redirect, redirect, g, render_template
+/from flask import Flask, redirect, redirect, g, render_template
 
 from flask import jsonify
 app = Flask(__name__, static_url_path='/static')
@@ -65,7 +65,7 @@ def all_song_data_to_file():
 
 def get_all_song_data():
     global all_song_data
-    f = open('all_song_data.txt')
+    f = open('all_song_data')
     json_string = f.read()
     # print(json.loads(json_string))
     all_song_data = json.loads(json_string)
@@ -74,8 +74,22 @@ def get_all_song_data():
 def single_song_dict_creator(artist, song):
     microsoft_score = int(microsoft_song_sentiment(artist=artist, song=song)*100)
     google_score = int((google_song_sentiment(artist=artist, song=song)+1)*50)
-    response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track'.format(artist = artist, song = song), headers=authorization_header)
-    ...... = json.loads(profile_response.text)
+    response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track&limit=1'.format(artist = artist, song = song), headers=authorization_header)
+    dictionary_to_use = json.loads(response.text)
+    song_id = None
+    for x in dictionary_to_use['tracks']['items']:
+        if x['type'] == 'track':
+            song_id = x['id']
+            break
+
+
+    header = ['Authorization: Bearer {your access token}'] # TO DO ! ! ! ! ! !!  ! ! ! ! ! ! ! ! ! ! ! !
+    response = requests.get('https://api.spotify.com/v1/audio-features/' + song_id, headers = header)
+    song_dict = json.loads(response.text)
+    song_dict["google_score"] = google_score
+    song_dict["microsoft_score"] = microsoft_score
+
+    return song_dict
 
 
 
@@ -118,9 +132,12 @@ auth_query_parameters = {
 @app.route("/login/")
 def index():
     # Auth Step 1: Authorization
+    #### WILL HAVE THE TWO ? THINGIES. 
+
     url_args = "&".join(["{}={}".format(key,urllib.parse.quote(val)) for key,val in auth_query_parameters.items()])
     auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
     return redirect(auth_url)
+
 
 
 
@@ -221,14 +238,17 @@ def microsoft_song_sentiment(artist, song):
 
 def json_creator(string):
     #to be called after get_all_song_data() has been called and the dictionary has been populated.
-    custom_dict = dict()
+    # custom_dict = dict()
+    custom_list = []
     for i in range(1, 101):
         track = all_song_data[i]['track']
         artist = all_song_data[i]['artist']
         dict_key = track + ", by " + artist
 
-        custom_dict[dict_key] = all_song_data[i][string]
-    return json.dumps(custom_dict)
+        custom_list.append({dict_key: all_song_data[i][string]})
+    custom_list.sort(key = lambda x: list(x.values())[0])
+
+    return json.dumps(custom_list)
 
 
 
@@ -264,9 +284,9 @@ def danceability():
 def energy():
     return json_creator("energy")
 
-@app.route("/instrumentalness")
-def instrumentalness():
-    return json_creator("instrumentalness")
+# @app.route("/instrumentalness")
+# def instrumentalness():
+    # return json_creator("instrumentalness")
 
 @app.route("/acousticness")
 def acousticness():
