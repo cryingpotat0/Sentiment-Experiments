@@ -6,6 +6,7 @@
  * For more information, read
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
+var l = require("lyric-get");
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
@@ -13,7 +14,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
 var client_id = '9fff3ec0f724450d9c8ef35594ac4729'; // Your client id
-var client_secret = 'None'; // Your secret
+var client_secret = '4eb6f9b4d06f4ae1bdfd1cdb9ae5a7de'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 /**
@@ -137,6 +138,20 @@ app.get('/refresh_token', function(req, res) {
       res.send({
         'access_token': access_token
       });
+    }
+  });
+});
+
+app.get('/lyric', function(req, res) {
+  var artist = req.query.artist;
+  var track = req.query.track;
+  //console.log(artist);
+  l.get(artist, track, function(err, data){
+    if(err){
+      res.json(err);
+    }
+    else{
+      res.json(data);
     }
   });
 });
