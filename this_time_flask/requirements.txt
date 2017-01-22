@@ -1,0 +1,4 @@
+Flask==0.11.1
+gunicorn==19.6.0
+google-cloud==0.22.0
+PyLyrics==1.1.0	
