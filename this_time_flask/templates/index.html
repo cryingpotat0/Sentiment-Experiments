@@ -14,7 +14,6 @@
 
     </title>
 
-    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
 
     <link href="/static/dist/toolkit-inverse.min.css" rel="stylesheet">
     <link href = "/static/dist/font-awesome.css" rel="stylesheet" />
@@ -45,11 +44,21 @@ body {
                 <span class="h1 text-bold"> &nbsp;&nbsp;&nbsp;&nbsp;Sentimental Spotify </span>
               </a>
             </div>
-
+            <div class = "panel panel-success">
+              <div class = "panel-heading" style="color:white;">
+                We built this because we thought it'd be really cool to analyze music – not just for its tone but also the inherent lyrics. Are dancing songs necessarily those with happy (positive) lyrics? How often do high energy songs have negative lyrics? Are songs with more acoustic more likely to show up on a top 100 list? IS THE MICROSOFT API BETTER FOR ANALYZING LYRICS, OR IS IT GOOGLE? Find out today at 12PM.
+                Use the first set of graphs to compare various features from the Spotify, Google and Microsoft APIs, or search for a song and find out if it's happy or sad. Happy sounding music might have sad lyrics, so find out how your favourite music sounds!
+              </div>
+            </div>
+                
             <div class="collapse text-center nav-toggleable-sm" id="nav-toggleable-sm">
               <ul class="nav nav-pills nav-stacked">
                 <li>
-                  <a href="#two_feature">Search</a>
+                  <form class="sidebar-form">
+                    <input style="display:inline-block; width:48%;padding:20px;" class="artist form-control" type="text" placeholder="Artist"></input>
+                    <input style="display:inline-block; width:48%;padding:20px" class="song form-control" type="text" placeholder="Song"></input>
+                  </form>
+                    <div style = "display: inline-block;background-color:#1ca8dd; margin-top:10px; width:40%;border:0px;color:black;font-weight:bold; border-radius: 8px;padding:10px;" class="search_submit">Search</div>
                 </li>
               </ul>
               <hr class="visible-xs m-t">
@@ -69,7 +78,7 @@ body {
             <div class="collapse nav-toggleable-sm" id="nav-toggleable-sm">
 
               <ul class="nav nav-pills nav-stacked">
-                <li class="nav-header">Choose any two</li>
+                <li class="nav-header text-bold">Choose any two</li>
                 <li id="danceability" class="active">
                   <a href="javascript:void(0)">
                     Danceability
@@ -116,8 +125,52 @@ body {
           </div>
         </div>
       </div>
-        <hr class="m-t">
+    </div>
+    <br><br><br><br><bR>
+    <br><br><br><br><bR>
+        <div class = "container">
+          <div class = "row ">
+            <h3 class = "text-center text-default m-b-md"> The Weekly Musical Nuggets of Knowledge </h3>
+            <div class = "col-sm-4">
+              <div class = "panel panel-success" style="padding:10px;">
+                <div class = "panel-heading">
+                <ul>
+                  <li>Caroline – low energy (39.4) but still considered to be a dancing song (94.5)</li>
+                  <li>Scars to your Beautiful, by Alessia Cara, is a high energy (75.4), low danceability song (32.1)</li>
+                  <li>Battle of the algorithms (Vague lyrics) – Sentiment index</li>
+                  <li>Perfect Strangers (Google: 32, Microsoft: 92)</li>
+                </ul>
+              </div>
+              </div>
+            </div>
+            <div class = "col-sm-4">
+              <div class = "panel panel-info" style="padding:10px;">
+                <div class = "panel-heading">
+                <ul>
+                  <li>I feel it coming (Google: 73, Microsoft: 27)</li>
+                  <li>Just Hold on, Steve Aoki: (Google: 44, Microsoft: 97)</li>
+                  <li>I got you, by Bebe Rexha (Google: 48, Microsoft: 99)</li>
+                  <li>About 70% of the songs on the top 100 list have low acoustics, high energy (except i hate you i love you), </li>
+                </ul>
+              </div>
+              </div>
+            </div>
+            <div class = "col-sm-4">
+              <div class = "panel panel-default" style="padding:10px;">
+                <div class = "panel-heading">
 
+                <ul>
+                  <li>HAPPIEST SONG - GOOGLE: Thinking out loud, Ed Sheehan</li>
+                  <li>SADDEST SONG - GOOGLE: Chill Bill, by Rob $tone</li>
+
+                  <li>HAPPIEST SONG - MICROSOFT: I got you, Bebe Rexha</li>
+                  <li>SADDEST SONG - Don’t leave</li>
+                </ul>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <script src="/static/dist/jquery.min.js"></script>
         <script src="/static/dist/chart.js"></script>

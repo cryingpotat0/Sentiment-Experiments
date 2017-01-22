@@ -19,7 +19,7 @@ a {
   font-size: 15px;
 }
 
-canvas#myChart {
+canvas{
   background: white;
   border-radius: 20px;
   padding: 20px;

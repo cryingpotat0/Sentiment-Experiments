@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>
+
+      &middot; SenSpot &middot;
+
+    </title>
+
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+
+    <link href="/static/dist/toolkit-inverse.min.css" rel="stylesheet">
+    <link href = "/static/dist/font-awesome.css" rel="stylesheet" />
+
+    <link href="/static/dist/application.css" rel="stylesheet">
+    <link href="/static/dist/main.css" rel="stylesheet">
+
+    <style>
+/* note: this is a hack for ios iframe for bootstrap themes shopify page */
+/* this chunk of css is not part of the toolkit :) */
+body {
+  width: 1px;
+  min-width: 100%;
+  *width: 100%;
+}
+    </style>
+  </head>
+
+
+  <body>
+    <div class="container">
+      <div class = "row">
+        <div class = "col-sm-6 col-sm-offset-3">
+            <div class="sidebar-header text-center">
+              <a class="sidebar-brand text-center img-responsive" href="index.html">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-music fa-5x sidebar-brand-fa"></span>
+                <span class="h2 text-bold"> &nbsp;&nbsp;&nbsp;&nbsp;Sentimental Spotify </span>
+              </a>
+            </div>
+        </div>
+      </div>
+        <div class="hr-divider m-t-md m-b">
+          <h3 class="hr-divider-content hr-divider-heading">Single Song Analysis</h3>
+        </div>
+
+        <div class="col-sm-12 content" style="height: 100%">
+
+          <div class="row ">
+            <div class="col-sm-12 m-b text-center append-chart-to">
+            <i class = "spinner fa fa-5x fa-spinner fa-spin"></i>
+              <!--
+              <div class="statcard statcard-warning">
+                <canvas id="sparkline1" width="378" height="120" class="sparkline" data-chart="spark-line" data-value="[{data:[43,48,52,58,50,95,100]}]" data-labels="['a', 'b','c','d','e','f','g']" style="width: 189px; height: 47px;"></canvas>
+              </div>
+              -->
+              <canvas style="display:none" height=130 id="songChart"></canvas>
+
+            </div>
+          </div>
+        </div>
+      </div>
+        <hr class="m-t">
+
+
+        <script src="/static/dist/jquery.min.js"></script>
+        <script src="/static/dist/chart.js"></script>
+        <script src="/static/dist/song.js"></script>
+        <script>
+// execute/clear BS loaders for docs
+$(function(){while(window.BS&&window.BS.loader&&window.BS.loader.length){(window.BS.loader.pop())()}})
+        </script>
+  </body>
+</html>
+

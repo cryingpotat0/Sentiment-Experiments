@@ -16,6 +16,12 @@ $(document).ready(function() {
     getJsonData(idOne, idTwo);
   });
 
+  $('.search_submit').click(function() {
+    console.log('moving');
+    localStorage.artist = $('.artist').val();
+    localStorage.song = $('.song').val();
+    window.location.replace("http://localhost:5000/login");
+  });
 
 });
 
@@ -37,6 +43,7 @@ var getJsonData = function(attribute1, attribute2) {
     }
   });
 }
+
 
 var populateGraphs = function(data1, data2, attribute1, attribute2) {
   var labels = [];
@@ -119,7 +126,6 @@ var createTwoFeature = function(innerData, xLabel, yLabel, labels) {
      */
   console.log(innerData)
   var scatterChart = new Chart(ctx, {
-    backgroundColor: 'white',
     type: 'line',
     data: {
       labels: labels,

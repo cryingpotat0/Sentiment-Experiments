@@ -71,10 +71,15 @@ def get_all_song_data():
     all_song_data = json.loads(json_string)
     all_song_data = {int(k): v for k,v in all_song_data.items()}
 
-def single_song_dict_creator(artist, song):
-    microsoft_score = int(microsoft_song_sentiment(artist=artist, song=song)*100)
-    google_score = int((google_song_sentiment(artist=artist, song=song)+1)*50)
-    response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track&limit=1'.format(artist = artist, song = song), headers=authorization_header)
+@app.route("/songSearch")
+def single_song_dict_creator():
+    artist = request.args.get('artist')
+    song = request.args.get('song')
+    access_token = request.args.get('access_token')
+    microsoft_score = int(float(microsoft_song_sentiment(artist=artist, song=song))*100)
+    google_score = int((float(google_song_sentiment(artist=artist, song=song))+1)*50)
+    header = {'Authorization': 'Bearer ' + access_token} # TO DO ! ! ! ! ! !!  ! ! ! ! ! ! ! ! ! ! ! !
+    response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track&limit=1'.format(artist = artist, song = song), headers=header)
     dictionary_to_use = json.loads(response.text)
     song_id = None
     for x in dictionary_to_use['tracks']['items']:
@@ -83,17 +88,15 @@ def single_song_dict_creator(artist, song):
             break
 
 
-    header = ['Authorization: Bearer {your access token}'] # TO DO ! ! ! ! ! !!  ! ! ! ! ! ! ! ! ! ! ! !
+    header = {'Authorization': 'Bearer ' + access_token} # TO DO ! ! ! ! ! !!  ! ! ! ! ! ! ! ! ! ! ! !
     response = requests.get('https://api.spotify.com/v1/audio-features/' + song_id, headers = header)
     song_dict = json.loads(response.text)
     song_dict["google_score"] = google_score
     song_dict["microsoft_score"] = microsoft_score
-
-    return song_dict
-
-
-
-
+    song_dict['energy'] *= 100;
+    song_dict['danceability'] *= 100;
+    song_dict['acousticness'] *= 100;
+    return json.dumps(song_dict)
 
 
 app.debug = True
@@ -167,24 +170,10 @@ def redirected_page():
     
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization":"Bearer {}".format(access_token)}
-    return access_token
+    redirect_url = "http://localhost:5000/song?access_token="+access_token
+    return redirect(redirect_url)
     # Get profile data
     #print("start")
-    user_profile_api_endpoint = "https://api.spotify.com/v1/me/top/artists"
-    profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
-    print(profile_response)
-    profile_data = json.loads(profile_response.text)
-    #
-    ## Get user playlist data
-    #playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
-    #playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
-    #playlist_data = json.loads(playlists_response.text)
-    #profile_response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=authorization_header) 
-    #response_data = profile_response.text
-    #print(profile_response)
-    #print('end')
-    # Combine profile and playlist data to display
-    return str(response_data)
 
 ######## SPOTIFY END ########
 
@@ -268,6 +257,10 @@ def microsoft():
 def main_page():
     get_all_song_data()
     return render_template('index.html')
+
+@app.route("/song")
+def song_page():
+    return render_template('song.html')
 
 @app.route("/google")
 def google():
