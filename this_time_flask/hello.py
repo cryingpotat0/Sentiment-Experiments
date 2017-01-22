@@ -51,7 +51,7 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 # Server-side Parameters
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 5000
-REDIRECT_URI = "{}:{}/index".format(CLIENT_SIDE_URL, PORT)
+REDIRECT_URI = "{}:{}/index/".format(CLIENT_SIDE_URL, PORT)
 SCOPE = "playlist-modify-public playlist-modify-private"
 STATE = ""
 SHOW_DIALOG_bool = True
@@ -75,21 +75,25 @@ def index():
     return redirect(auth_url)
 
 
-@app.route("/index")
+@app.route("/index/")
 def redirected_page():
     # Auth Step 4: Requests refresh and access tokens
     auth_token = request.args['code']
+    #print(auth_token)
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": REDIRECT_URI
+        "redirect_uri": "http://localhost:5000/index/",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
     }
-    base64encoded = base64.b64encode("{}:{}".format(CLIENT_ID, CLIENT_SECRET))
-    headers = {"Authorization": "Basic {}".format(base64encoded)}
-    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload, headers=headers)
+    #base64encoded = base64.b64encode("{}:{}".format(CLIENT_ID, CLIENT_SECRET))
+    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload)
 
     # Auth Step 5: Tokens are Returned to Application
     response_data = json.loads(post_request.text)
+    #print("response")
+    #print(response_data)
     access_token = response_data["access_token"]
     refresh_token = response_data["refresh_token"]
     token_type = response_data["token_type"]
@@ -97,20 +101,24 @@ def redirected_page():
     
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization":"Bearer {}".format(access_token)}
-    
+    return access_token
     # Get profile data
-    user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
+    #print("start")
+    user_profile_api_endpoint = "https://api.spotify.com/v1/me/top/artists"
     profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
+    print(profile_response)
     profile_data = json.loads(profile_response.text)
-    
-    # Get user playlist data
-    playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
-    playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
-    playlist_data = json.loads(playlists_response.text)
-    
+    #
+    ## Get user playlist data
+    #playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
+    #playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
+    #playlist_data = json.loads(playlists_response.text)
+    #profile_response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=authorization_header) 
+    #response_data = profile_response.text
+    #print(profile_response)
+    #print('end')
     # Combine profile and playlist data to display
-    display_arr = [profile_data] + playlist_data["items"]
-    return str(display_arr)
+    return str(response_data)
 
 ######## SPOTIFY END ########
 
