@@ -52,6 +52,8 @@ var populateGraphs = function(data1, data2, attribute1, attribute2) {
       y: data2[label]
     });
   }
+  //innerData.sort(compare);
+  console.log(innerData);
   data.datasets = [{
     backgroundColor: "rgba(153, 255, 51, 0.5)",
     data: innerData
@@ -62,6 +64,15 @@ var populateGraphs = function(data1, data2, attribute1, attribute2) {
   $('.append-chart-to').append(' <canvas id="myChart"></canvas>');
   createTwoFeature(data, attribute1, attribute2, labels);
 }
+
+function compare(a,b) {
+    if (a.y < b.y )
+          return -1;
+      if (a.y > b.y)
+            return 1;
+        return 0;
+}
+
 
 var createTwoFeature = function(data, xLabel, yLabel, labels) {
   var ctx = document.getElementById('myChart').getContext('2d');
@@ -75,9 +86,28 @@ var createTwoFeature = function(data, xLabel, yLabel, labels) {
       },
       scales:
       {
+        yAxes: [{
+          display: true,
+          ticks: {
+            suggestedMin: 0,    
+            beginAtZero: true   // minimum value will be 0.
+          },
+          scaleLabel: {
+            display: true,
+            labelString: yLabel
+          }
+        }],
         xAxes: [{
-          display: false
-        }]
+          display: false,
+          ticks: {
+            suggestedMin: 0,    
+            beginAtZero: true   // minimum value will be 0.
+          },
+          scaleLabel: {
+            display: true,
+            labelString: xLabel ,
+          }
+        }],
       }
     }
   });
