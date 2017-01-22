@@ -6,7 +6,6 @@
  * For more information, read
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
-var l = require("lyric-get");
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
@@ -16,6 +15,49 @@ var cookieParser = require('cookie-parser');
 var client_id = '9fff3ec0f724450d9c8ef35594ac4729'; // Your client id
 var client_secret = '4eb6f9b4d06f4ae1bdfd1cdb9ae5a7de'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+// const Language = require('@google-cloud/language');
+
+var gcloud = require('google-cloud');
+var language = gcloud.language;
+var languageClient = language({
+  projectId: 'sentiment-analysis',
+  keyFilename: '/Users/muditgupta/Desktop/Feedback\ Sorter-fd2dda1678e8.json'
+});
+
+
+
+function analyzeSentimentOfText (text) {
+
+  var document = languageClient.document(text);
+
+
+  document.detectSentiment(function(err, sentiment) {
+  // sentiment = 100 // Large numbers represent more positive sentiments. 
+     console.log(sentiment);
+  });
+}
+
+
+//   // Instantiates a client
+//   const language = languageClient();
+
+//   // Instantiates a Document, representing the provided text
+//   const document = language.document({
+//     // The document text, e.g. "Hello, world!"
+//     content: text
+//   });
+
+//   // Detects the sentiment of the document
+//   return document.detectSentiment()
+//     .then((results) => {
+//       const sentiment = results[0];
+
+//       console.log(`Sentiment: ${sentiment >= 0 ? 'positive' : 'negative'}.`);
+
+//       return sentiment;
+//     });
+// }
+
 
 /**
  * Generates a random string containing numbers and letters
@@ -142,20 +184,9 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-app.get('/lyric', function(req, res) {
-  var artist = req.query.artist;
-  var track = req.query.track;
-  //console.log(artist);
-  l.get(artist, track, function(err, data){
-    if(err){
-      res.json(err);
-    }
-    else{
-      res.json(data);
-    }
-  });
-});
 
+
+console.log('Listening on 8888');
 app.get('/sentiment', function(req, res) {
   var document = languageClient.document(req.query.lyric);
   console.log(req.query.lyric);
@@ -166,6 +197,4 @@ app.get('/sentiment', function(req, res) {
   });
   
 });
-
-console.log('Listening on 8888');
 app.listen(8888);
