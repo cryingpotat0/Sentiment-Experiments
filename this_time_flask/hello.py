@@ -4,6 +4,8 @@ app = Flask(__name__)
 from google.cloud import language
 from PyLyrics import *
 from flask import request
+import requests
+import json
 
 app.debug = True
 
@@ -41,10 +43,29 @@ def google_song_sentiment(artist, song):
     sentiment_scores = [google_sentiment_text(x) for x in split_lyrics]
     return str(sum(sentiment_scores)/len(sentiment_scores))
 
-@app.route("/google")
-def google():
+def microsoft_song_sentiment(artist, song):
+    lyrics = getLyrics(artist, song)
+    lyrics = lyrics.replace("\n\n", ". ")
+    split_lyrics = splitLyrics(lyrics)
+
+    d = [{"id": x+1, "text": split_lyrics[x]} for x in range(len(split_lyrics))]
+    data = {"documents" : d}
+    headers = {'Ocp-Apim-Subscription-Key': 'ab4d68e54a814f768d0402035c5645a5',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'}
+
+    r = requests.post('https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment', data = json.dumps(data), headers=headers)
+
+    list_of_scoredicts = json.loads(r.text)['documents']
+    scores = [x['score'] for x in list_of_scoredicts]
+    return str(sum(scores)/len(scores))
+
+
+@app.route("/hello")
+def hello():
     artist = request.args.get('artist')
     song = request.args.get('song')
+    return str(google_song_sentiment(artist, song)) + "HELLO" + str(microsoft_song_sentiment(artist, song))
     return jsonify(score=google_song_sentiment(artist, song))
 
 @app.route("/")
@@ -54,7 +75,6 @@ def index():
 @app.route("/microsoft")
 def index():
     return "Microsoft"
-
 
 if __name__ == "__main__":
     app.run()
