@@ -65,7 +65,7 @@ def all_song_data_to_file():
 
 def get_all_song_data():
     global all_song_data
-    f = open('all_song_data.txt')
+    f = open('all_song_data')
     json_string = f.read()
     # print(json.loads(json_string))
     all_song_data = json.loads(json_string)
@@ -75,7 +75,7 @@ def single_song_dict_creator(artist, song):
     microsoft_score = int(microsoft_song_sentiment(artist=artist, song=song)*100)
     google_score = int((google_song_sentiment(artist=artist, song=song)+1)*50)
     response = requests.get('https://api.spotify.com/v1/search?q=artist:{artist} track:{song}&type=track'.format(artist = artist, song = song), headers=authorization_header)
-    ...... = json.loads(profile_response.text)
+    something = json.loads(profile_response.text)
 
 
 

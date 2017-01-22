@@ -79,32 +79,32 @@ body {
 
               <ul class="nav nav-pills nav-stacked">
                 <li class="nav-header">Choose any two</li>
-                <li> 
+                <li id="danceability" class="active">
                   <a>
                     Danceability
                   </a>
                 </li>
-                <li>
+                <li id="energy" class="active">
                   <a>
                     Energy
                   </a>
                 </li>
-                <li>
+                <li id="instrumentalness">
                   <a>
                     Instrumental
                   </a>
                 </li>
-                <li>
+                <li id="microsoft">
                   <a>
                     Microsoft Sentiment
                   </a>
                 </li>
-                <li>
+                <li id="google">
                   <a>
                     Google Sentiment
                   </a>
                 </li>
-                <li>
+                <li id="acousticness">
                   <a>
                     Acoustic
                   </a>
@@ -117,15 +117,15 @@ body {
 
         <div class="col-sm-9 content" style="height: 100%">
 
-          <div class="row statcards">
-            <div class="col-sm-12 m-b">
+          <div class="row ">
+            <div class="col-sm-12 m-b append-chart-to">
+              <!--
               <div class="statcard statcard-warning">
-                <div class="p-a">
-                  <span class="statcard-desc">Comparison</span>
-                  <hr class="statcard-hr m-b-0">
-                </div>
                 <canvas id="sparkline1" width="378" height="120" class="sparkline" data-chart="spark-line" data-value="[{data:[43,48,52,58,50,95,100]}]" data-labels="['a', 'b','c','d','e','f','g']" style="width: 189px; height: 47px;"></canvas>
               </div>
+              -->
+              <canvas id="myChart"></canvas>
+
             </div>
           </div>
         </div>
@@ -135,14 +135,11 @@ body {
 
         <script src="/static/dist/jquery.min.js"></script>
         <script src="/static/dist/chart.js"></script>
-        <script src="/static/dist/tablesorter.min.js"></script>
-        <script src="/static/dist/toolkit.js"></script>
-        <script src="/static/dist/application.js"></script>
+        <script src="/static/dist/main.js"></script>
         <script>
 // execute/clear BS loaders for docs
 $(function(){while(window.BS&&window.BS.loader&&window.BS.loader.length){(window.BS.loader.pop())()}})
         </script>
-        <script src="/static/dist/main.js"></script>
   </body>
 </html>
 
