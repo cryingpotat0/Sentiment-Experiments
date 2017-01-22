@@ -1,4 +1,4 @@
-/from flask import Flask, redirect, redirect, g, render_template
+from flask import Flask, redirect, redirect, g, render_template
 
 from flask import jsonify
 app = Flask(__name__, static_url_path='/static')
@@ -238,17 +238,14 @@ def microsoft_song_sentiment(artist, song):
 
 def json_creator(string):
     #to be called after get_all_song_data() has been called and the dictionary has been populated.
-    # custom_dict = dict()
-    custom_list = []
+    custom_dict = dict()
     for i in range(1, 101):
         track = all_song_data[i]['track']
         artist = all_song_data[i]['artist']
         dict_key = track + ", by " + artist
 
-        custom_list.append({dict_key: all_song_data[i][string]})
-    custom_list.sort(key = lambda x: list(x.values())[0])
-
-    return json.dumps(custom_list)
+        custom_dict[dict_key] = all_song_data[i][string]
+    return json.dumps(custom_dict)
 
 
 
