@@ -16,22 +16,28 @@ app.debug = True
 song_scores = dict()
 
 def top_200_songs_reader():
-    with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            rank = int(row[0])
-            song_scores[rank] = dict()
-            song_scores[rank]['track'] = row[1]
-            song_scores[rank]['artist'] = row[2]
-            print("Working on track number {rank}, {track} by {artist}".format(
-                        rank=rank, track=row[1], artist=row[2]))
-            song_scores[rank]['google_score'] = float(google_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
-            song_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
+    with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as read_file:
+        with open('top200.csv', 'wt') as write_file:
+            reader = csv.reader(read_file)
+            writer = csv.writer(write_file)
+            for row in reader:
+                rank = int(row[0])
+                song_scores[rank] = dict()
+                song_scores[rank]['track'] = row[1]
+                song_scores[rank]['artist'] = row[2]
+                print("Working on track number {rank}, {track} by {artist}".format(
+                            rank=rank, track=row[1], artist=row[2]))
+                song_scores[rank]['google_score'] = float(google_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
+                song_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
+                print("Google score is {}".format(song_scores[rank]['google_score']))
+                print("Microsoft score is {}".format(song_scores[rank]['microsoft_score']))
+                writer.writerow([rank, row[1], row[2], song_scores[rank]['google_score'], song_scores[rank]['microsoft_score']])
+
 
 def top_200_songs_writer():
     with open('top200.csv', 'wb') as csv_file:
         writer = csv.writer(csv_file)
-        for key, value in mydict.items():
+        for key, value in song_scores.items():
             writer.writerow([key, value])
 
 app.debug = True
@@ -164,7 +170,7 @@ def microsoft_song_sentiment(artist, song):
 
 @app.route("/hello")
 def hello():
-    # top_200_songs_reader()
+    top_200_songs_reader()
     artist = request.args.get('artist')
     song = request.args.get('song')
     return str(google_song_sentiment(artist, song)) + " HELLO " + str(microsoft_song_sentiment(artist, song))
