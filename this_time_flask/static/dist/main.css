@@ -13,3 +13,8 @@ a {
 #two_feature {
   height:300px !important;
 }
+
+#two_feature_chart {
+  height:90%;
+  font-size: 15px;
+}
