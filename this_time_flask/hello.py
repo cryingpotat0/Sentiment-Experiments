@@ -13,32 +13,69 @@ import urllib.parse
 
 app.debug = True
 
-song_scores = dict()
+song_sentiment_scores = dict()
+all_song_data = dict()
 
-def top_200_songs_reader():
+def read_song_sentiment_scores_from_file():
+    with open('top100-gm.csv') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            song_sentiment_scores[int(row[0])] = {
+                        "track": row[1],
+                        "artist": row[2],
+                        "google_score": int((float(row[3]) + 1)*50),
+                        "microsoft_score": int(float(row[4]) * 100)
+                }
+
+## DO NOT RUN THIS METHOD AGAIN ! ! ! ! 
+def write_song_sentiment_scores():
     with open("regional-global-daily-latest.csv", "rt", encoding = "ISO-8859-1") as read_file:
         with open('top200.csv', 'wt') as write_file:
             reader = csv.reader(read_file)
             writer = csv.writer(write_file)
             for row in reader:
                 rank = int(row[0])
-                song_scores[rank] = dict()
-                song_scores[rank]['track'] = row[1]
-                song_scores[rank]['artist'] = row[2]
+                song_sentiment_scores[rank] = dict()
+                song_sentiment_scores[rank]['track'] = row[1]
+                song_sentiment_scores[rank]['artist'] = row[2]
                 print("Working on track number {rank}, {track} by {artist}".format(
                             rank=rank, track=row[1], artist=row[2]))
-                song_scores[rank]['google_score'] = float(google_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
-                song_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_scores[rank]['artist'], song_scores[rank]['track']))
-                print("Google score is {}".format(song_scores[rank]['google_score']))
-                print("Microsoft score is {}".format(song_scores[rank]['microsoft_score']))
-                writer.writerow([rank, row[1], row[2], song_scores[rank]['google_score'], song_scores[rank]['microsoft_score']])
+                song_sentiment_scores[rank]['google_score'] = float(google_song_sentiment(song_sentiment_scores[rank]['artist'], song_sentiment_scores[rank]['track']))
+                song_sentiment_scores[rank]['microsoft_score'] = float(microsoft_song_sentiment(song_sentiment_scores[rank]['artist'], song_sentiment_scores[rank]['track']))
+                print("Google score is {}".format(song_sentiment_scores[rank]['google_score']))
+                print("Microsoft score is {}".format(song_sentiment_scores[rank]['microsoft_score']))
+                writer.writerow([rank, row[1], row[2], song_sentiment_scores[rank]['google_score'], song_sentiment_scores[rank]['microsoft_score']])
+
+def parse_spotify_data():
+    f = open('spotify_data')
+    json_string = f.read()
+
+    spotify_data_dict = json.loads(json_string)
+    spotify_data_list = spotify_data_dict["audio_features"]
+    # all_song_data = dict()
+
+    for i in range(100):
+        all_song_data[i + 1] = spotify_data_list[i]
+        all_song_data[i + 1] = dict(list(all_song_data[i + 1].items()) + list(song_sentiment_scores[i + 1].items()))
+
+    # print(all_song_data[0])
+
+def all_song_data_to_file():
+    json.dump(all_song_data, open("all_song_data", "w"))
+
+def get_all_song_data():
+    global all_song_data
+    f = open('all_song_data.txt')
+    json_string = f.read()
+    # print(json.loads(json_string))
+    all_song_data = json.loads(json_string)
+    all_song_data = {int(k): v for k,v in all_song_data.items()}
 
 
-def top_200_songs_writer():
-    with open('top200.csv', 'wb') as csv_file:
-        writer = csv.writer(csv_file)
-        for key, value in song_scores.items():
-            writer.writerow([key, value])
+
+
+
+
 
 app.debug = True
 
@@ -57,7 +94,7 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 # Server-side Parameters
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 5000
-REDIRECT_URI = "{}:{}/index".format(CLIENT_SIDE_URL, PORT)
+REDIRECT_URI = "{}:{}/index/".format(CLIENT_SIDE_URL, PORT)
 SCOPE = "playlist-modify-public playlist-modify-private"
 STATE = ""
 SHOW_DIALOG_bool = True
@@ -81,21 +118,25 @@ def index():
     return redirect(auth_url)
 
 
-@app.route("/index")
+@app.route("/index/")
 def redirected_page():
     # Auth Step 4: Requests refresh and access tokens
     auth_token = request.args['code']
+    #print(auth_token)
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": REDIRECT_URI
+        "redirect_uri": "http://localhost:5000/index/",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
     }
-    base64encoded = base64.b64encode("{}:{}".format(CLIENT_ID, CLIENT_SECRET))
-    headers = {"Authorization": "Basic {}".format(base64encoded)}
-    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload, headers=headers)
+    #base64encoded = base64.b64encode("{}:{}".format(CLIENT_ID, CLIENT_SECRET))
+    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload)
 
     # Auth Step 5: Tokens are Returned to Application
     response_data = json.loads(post_request.text)
+    #print("response")
+    #print(response_data)
     access_token = response_data["access_token"]
     refresh_token = response_data["refresh_token"]
     token_type = response_data["token_type"]
@@ -103,20 +144,24 @@ def redirected_page():
     
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization":"Bearer {}".format(access_token)}
-    
+    return access_token
     # Get profile data
-    user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
+    #print("start")
+    user_profile_api_endpoint = "https://api.spotify.com/v1/me/top/artists"
     profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
+    print(profile_response)
     profile_data = json.loads(profile_response.text)
-    
-    # Get user playlist data
-    playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
-    playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
-    playlist_data = json.loads(playlists_response.text)
-    
+    #
+    ## Get user playlist data
+    #playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
+    #playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
+    #playlist_data = json.loads(playlists_response.text)
+    #profile_response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=authorization_header) 
+    #response_data = profile_response.text
+    #print(profile_response)
+    #print('end')
     # Combine profile and playlist data to display
-    display_arr = [profile_data] + playlist_data["items"]
-    return str(display_arr)
+    return str(response_data)
 
 ######## SPOTIFY END ########
 
@@ -170,7 +215,7 @@ def microsoft_song_sentiment(artist, song):
 
 @app.route("/hello")
 def hello():
-    top_200_songs_reader()
+    # top_200_songs_reader()
     artist = request.args.get('artist')
     song = request.args.get('song')
     return str(google_song_sentiment(artist, song)) + " HELLO " + str(microsoft_song_sentiment(artist, song))
@@ -182,6 +227,26 @@ def hello():
 @app.route("/microsoft")
 def microsoft():
     return "Microsoft"
+
+@app.route("/google")
+def google():
+    return "GOOGLE"
+
+@app.route("/danceability")
+def danceability():
+    return "GOOGLE"
+
+@app.route("/energy")
+def energy():
+    return "GOOGLE"
+
+@app.route("/instrumentalness")
+def instrumentalness():
+    return "GOOGLE"
+
+@app.route("/acousticness")
+def acousticness():
+    return "GOOGLE"
 
 if __name__ == "__main__":
     app.run()
