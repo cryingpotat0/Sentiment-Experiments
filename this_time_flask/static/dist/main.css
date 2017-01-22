@@ -18,3 +18,9 @@ a {
   height:90%;
   font-size: 15px;
 }
+
+canvas#myChart {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+}
